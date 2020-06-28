@@ -18,7 +18,7 @@ public class User {
         return id;
     }
 
-    // id is set to -1 if NumberFormatException is thrown and User is filtered out later
+    // id is set to -1 if NumberFormatException is thrown and User is filtered out in UserLookupService
     public void setId(String id) {
         try {
             // check it isn't overwriting change from lat/lon NumberFormatException
