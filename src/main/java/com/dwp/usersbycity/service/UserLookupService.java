@@ -3,7 +3,7 @@ package com.dwp.usersbycity.service;
 import com.dwp.usersbycity.config.ExternalApiProperties;
 import com.dwp.usersbycity.config.GeoProperties;
 import com.dwp.usersbycity.models.User;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,15 +15,15 @@ import java.util.*;
 @Service
 public class UserLookupService {
 
-    private final RestTemplate restTemplate;
+    @Autowired
+    private RestTemplate restTemplate;
+
     private final GeoProperties geoProperties;
     private final ExternalApiProperties externalApiProperties;
-
     private final List<User> cityUsers = new ArrayList<>();
 
-    public UserLookupService(RestTemplateBuilder restTemplatebuilder, GeoProperties geoProperties,
+    public UserLookupService(GeoProperties geoProperties,
                              ExternalApiProperties externalApiProperties) {
-        this.restTemplate = restTemplatebuilder.build();
         this.geoProperties = geoProperties;
         this.externalApiProperties = externalApiProperties;
     }
@@ -35,7 +35,7 @@ public class UserLookupService {
     }
 
     private void addUsersLivingInCity() {
-        String url = externalApiProperties.getBaseUrl() + externalApiProperties.usersInCityEndpoint;
+        String url = externalApiProperties.getBaseUrl() + externalApiProperties.getUsersLivingInCityEndpoint();
         ResponseEntity<User[]> response = this.restTemplate.getForEntity(url, User[].class);
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             List<User> usersLivingInCity = new ArrayList<>();
@@ -45,7 +45,7 @@ public class UserLookupService {
     }
 
     private void addUsersInRadiusOfCity() {
-        String url = externalApiProperties.getBaseUrl() + externalApiProperties.allUsersEndpoint;
+        String url = externalApiProperties.getBaseUrl() + externalApiProperties.getAllUsersEndpoint();
         ResponseEntity<User[]> response = this.restTemplate.getForEntity(url, User[].class);
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             List<User> allUsers = Arrays.asList(response.getBody());

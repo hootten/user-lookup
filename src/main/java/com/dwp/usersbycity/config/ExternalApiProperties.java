@@ -8,12 +8,12 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class ExternalApiProperties {
 
     public final String baseUrl;
-    public final String usersInCityEndpoint;
+    public final String usersLivingInCityEndpoint;
     public final String allUsersEndpoint;
 
-    public ExternalApiProperties(String baseUrl, String usersInCityEndpoint, String allUsersEndpoint) {
+    public ExternalApiProperties(String baseUrl, String usersLivingInCityEndpoint, String allUsersEndpoint) {
         this.baseUrl = baseUrl;
-        this.usersInCityEndpoint = usersInCityEndpoint;
+        this.usersLivingInCityEndpoint = usersLivingInCityEndpoint;
         this.allUsersEndpoint = allUsersEndpoint;
     }
 
@@ -21,8 +21,8 @@ public class ExternalApiProperties {
         return baseUrl;
     }
 
-    public String getUsersInCityEndpoint() {
-        return usersInCityEndpoint;
+    public String getUsersLivingInCityEndpoint() {
+        return usersLivingInCityEndpoint;
     }
 
     public String getAllUsersEndpoint() {
