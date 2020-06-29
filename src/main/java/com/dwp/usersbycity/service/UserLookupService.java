@@ -15,15 +15,15 @@ import java.util.*;
 @Service
 public class UserLookupService {
 
-    @Autowired
-    private RestTemplate restTemplate;
-
+    private final RestTemplate restTemplate;
     private final GeoProperties geoProperties;
     private final ExternalApiProperties externalApiProperties;
-    private final List<User> cityUsers = new ArrayList<>();
 
-    public UserLookupService(GeoProperties geoProperties,
-                             ExternalApiProperties externalApiProperties) {
+    private final List<User> usersLinkedToCity = new ArrayList<>();
+
+    @Autowired
+    public UserLookupService(RestTemplate restTemplate, GeoProperties geoProperties, ExternalApiProperties externalApiProperties) {
+        this.restTemplate = restTemplate;
         this.geoProperties = geoProperties;
         this.externalApiProperties = externalApiProperties;
     }
@@ -31,7 +31,7 @@ public class UserLookupService {
     public ResponseEntity<List<User>> getUsersLinkedToCity() {
         this.addUsersLivingInCity();
         this.addUsersInRadiusOfCity();
-        return ResponseEntity.ok(cityUsers);
+        return ResponseEntity.ok(usersLinkedToCity);
     }
 
     private void addUsersLivingInCity() {
@@ -40,7 +40,7 @@ public class UserLookupService {
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             List<User> usersLivingInCity = new ArrayList<>();
             Collections.addAll(usersLivingInCity, response.getBody());
-            cityUsers.addAll(usersLivingInCity);
+            usersLinkedToCity.addAll(usersLivingInCity);
         }
     }
 
@@ -60,7 +60,7 @@ public class UserLookupService {
                     usersWithinRadius.add(user);
                 }
             });
-            cityUsers.addAll(usersWithinRadius);
+            usersLinkedToCity.addAll(usersWithinRadius);
         }
     }
 }

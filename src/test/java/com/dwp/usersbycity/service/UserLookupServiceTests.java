@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
@@ -17,19 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = UserLookupService.class)
-//@Import(TestConfig.class)
-//@SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class UserLookupServiceTests {
 
-    @InjectMocks
     UserLookupService userLookupService;
 
     @Mock
@@ -41,42 +37,84 @@ public class UserLookupServiceTests {
     @Mock
     private ExternalApiProperties externalApiProperties;
 
-    @Mock
-    List<User> cityUsers;
+    private List<User> usersLinkedToCity = new ArrayList<>();
 
-    MockRestServiceServer mockServer;
-
-    ObjectMapper mapper = new ObjectMapper();
-
-    User[] users = new User[1];
+    User[] usersLivingInCity = new User[1];
+    User[] allUsers= new User[3];
 
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        User user = new User();
-        user.setId("1");
-        users[0] = user;
+        userLookupService = new UserLookupService(restTemplate, geoProperties, externalApiProperties);
 
+        Mockito.when(externalApiProperties.getBaseUrl()).thenReturn("BASE");
+        Mockito.when(externalApiProperties.getUsersLivingInCityEndpoint()).thenReturn("/LIVING_IN_CITY");
+        Mockito.when(externalApiProperties.getAllUsersEndpoint()).thenReturn("/ALL_USERS");
+        Mockito.when(geoProperties.getCityLat()).thenReturn(51.5072);
+        Mockito.when(geoProperties.getCityLon()).thenReturn(-0.1275);
+        Mockito.when(geoProperties.getRadius()).thenReturn(50);
+        Mockito.when(geoProperties.getMilesPerMetre()).thenReturn(0.0006213712);
+
+        Mockito.when(restTemplate.getForEntity(eq("BASE/LIVING_IN_CITY"), eq(User[].class)))
+                .thenReturn(new ResponseEntity<>(usersLivingInCity, HttpStatus.OK));
+        Mockito.when(restTemplate.getForEntity(eq("BASE/ALL_USERS"), eq(User[].class)))
+                .thenReturn(new ResponseEntity<>(allUsers, HttpStatus.OK));
     }
 
     @Test
-    public void testGetUsersLinkedToCity() throws JsonProcessingException {
-        when(externalApiProperties.getBaseUrl()).thenReturn("BASE");
-        when(externalApiProperties.getUsersLivingInCityEndpoint()).thenReturn("/LIVING_IN_CITY");
-        when(externalApiProperties.getAllUsersEndpoint()).thenReturn("/ALL_USERS");
-        when(restTemplate.getForEntity(anyString(), eq(User[].class)))
-                .thenReturn(new ResponseEntity<>(users, HttpStatus.OK));
-//        mockServer.expect(ExpectedCount.once(),
-//                requestTo("BASE/LIVING_IN_CITY"))
-//                .andExpect(method(HttpMethod.GET))
-//                .andRespond(withStatus(HttpStatus.OK)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .body(mapper.writeValueAsString(users))
-//                );
-//        Mockito.when(restTemplate.getForEntity("BASE/LIVING_IN_CITY", User[].class))
-//                .thenReturn(new ResponseEntity<User[]>(users, HttpStatus.OK));
+    public void testGetUsersLinkedToCity() {
+        this.setupUsers();
+        userLookupService.getUsersLinkedToCity();
+        assertEquals(2, usersLinkedToCity.size());
+    }
 
+    @Test
+    public void testGetUsersLinkedToCityNoUsers() {
+        this.setupUsersForNoUsersResult();
         userLookupService.getUsersLinkedToCity();
 
+    }
+
+    private void setupUsers() {
+        User userLivingInCity = new User();
+        userLivingInCity.setId("1");
+        userLivingInCity.setLatitude("1");
+        userLivingInCity.setLongitude("-3");
+
+        User userInCity = new User();
+        userInCity.setId("2");
+        userInCity.setLatitude("51.7");
+        userInCity.setLongitude("-0.132");
+
+        User userNotLinkedToCity = new User();
+        userNotLinkedToCity.setId("3");
+        userNotLinkedToCity.setLatitude("34");
+        userNotLinkedToCity.setLongitude("4");
+
+        usersLivingInCity[0] = userLivingInCity;
+        allUsers[0] = userLivingInCity;
+        allUsers[1] = userInCity;
+        allUsers[2] = userNotLinkedToCity;
+    }
+
+    private void setupUsersForNoUsersResult() {
+        User userLivingInCity = new User();
+        userLivingInCity.setId("1");
+        userLivingInCity.setLatitude("1");
+        userLivingInCity.setLongitude("-3");
+
+        User userInCity = new User();
+        userInCity.setId("2");
+        userInCity.setLatitude("10.7");
+        userInCity.setLongitude("-47.132");
+
+        User userNotLinkedToCity = new User();
+        userNotLinkedToCity.setId("3");
+        userNotLinkedToCity.setLatitude("34");
+        userNotLinkedToCity.setLongitude("4");
+
+        allUsers[0] = userLivingInCity;
+        allUsers[1] = userInCity;
+        allUsers[2] = userNotLinkedToCity;
     }
 }
