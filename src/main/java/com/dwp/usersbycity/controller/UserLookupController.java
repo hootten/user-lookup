@@ -19,8 +19,8 @@ public class UserLookupController {
         this.userLookupService = userLookupService;
     }
 
-    @GetMapping(Constants.usersByCityEndpoint)
-    public ResponseEntity<List<User>> getUsersByCity() throws Exception {
+    @GetMapping(Constants.USERS_LINKED_TO_CITY_ENDPOINT)
+    public ResponseEntity<List<User>> getUsersLinkedToCity() {
         return this.userLookupService.getUsersLinkedToCity();
     }
 
