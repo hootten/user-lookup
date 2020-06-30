@@ -3,7 +3,7 @@ package com.dwp.usersbycity.service;
 import com.dwp.usersbycity.config.ExternalApiProperties;
 import com.dwp.usersbycity.config.GeoProperties;
 import com.dwp.usersbycity.models.User;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,11 @@ public class UserLookupService {
     private final GeoProperties geoProperties;
     private final ExternalApiProperties externalApiProperties;
 
-    private final List<User> cityUsers = new ArrayList<>();
+    private final List<User> usersLinkedToCity = new ArrayList<>();
 
-    public UserLookupService(RestTemplateBuilder restTemplatebuilder, GeoProperties geoProperties,
-                             ExternalApiProperties externalApiProperties) {
-        this.restTemplate = restTemplatebuilder.build();
+    @Autowired
+    public UserLookupService(RestTemplate restTemplate, GeoProperties geoProperties, ExternalApiProperties externalApiProperties) {
+        this.restTemplate = restTemplate;
         this.geoProperties = geoProperties;
         this.externalApiProperties = externalApiProperties;
     }
@@ -31,21 +31,21 @@ public class UserLookupService {
     public ResponseEntity<List<User>> getUsersLinkedToCity() {
         this.addUsersLivingInCity();
         this.addUsersInRadiusOfCity();
-        return ResponseEntity.ok(cityUsers);
+        return ResponseEntity.ok(usersLinkedToCity);
     }
 
     private void addUsersLivingInCity() {
-        String url = externalApiProperties.getBaseUrl() + externalApiProperties.usersInCityEndpoint;
+        String url = externalApiProperties.getBaseUrl() + externalApiProperties.getUsersLivingInCityEndpoint();
         ResponseEntity<User[]> response = this.restTemplate.getForEntity(url, User[].class);
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             List<User> usersLivingInCity = new ArrayList<>();
             Collections.addAll(usersLivingInCity, response.getBody());
-            cityUsers.addAll(usersLivingInCity);
+            usersLinkedToCity.addAll(usersLivingInCity);
         }
     }
 
     private void addUsersInRadiusOfCity() {
-        String url = externalApiProperties.getBaseUrl() + externalApiProperties.allUsersEndpoint;
+        String url = externalApiProperties.getBaseUrl() + externalApiProperties.getAllUsersEndpoint();
         ResponseEntity<User[]> response = this.restTemplate.getForEntity(url, User[].class);
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             List<User> allUsers = Arrays.asList(response.getBody());
@@ -60,7 +60,7 @@ public class UserLookupService {
                     usersWithinRadius.add(user);
                 }
             });
-            cityUsers.addAll(usersWithinRadius);
+            usersLinkedToCity.addAll(usersWithinRadius);
         }
     }
 }

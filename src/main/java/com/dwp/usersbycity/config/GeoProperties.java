@@ -7,37 +7,38 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @ConfigurationProperties(prefix = "geo")
 public class GeoProperties {
 
-    private final String city;
-    private final double cityLat;
-    private final double cityLon;
-    private final double milesPerMetre;
-    private final int radius;
+    private final String CITY;
+    private final double CITY_LAT;
+    private final double CITY_LON;
+    private final double MILES_PER_METRE;
+    private final int RADIUS;
 
     public GeoProperties(String city, double cityLat, double cityLon, double milesPerMetre, int radius) {
-        this.city = city;
-        this.cityLat = cityLat;
-        this.cityLon = cityLon;
-        this.milesPerMetre = milesPerMetre;
-        this.radius = radius;
+        this.CITY = city;
+        this.CITY_LAT = cityLat;
+        this.CITY_LON = cityLon;
+        this.MILES_PER_METRE = milesPerMetre;
+        this.RADIUS = radius;
     }
 
     public double getMilesPerMetre() {
-        return milesPerMetre;
+        return MILES_PER_METRE;
     }
 
     public int getRadius() {
-        return radius;
+        return RADIUS;
     }
 
     public String getCity() {
-        return city;
+        return CITY;
     }
 
     public double getCityLat() {
-        return cityLat;
+        return CITY_LAT;
     }
 
     public double getCityLon() {
-        return cityLon;
+        return CITY_LON;
     }
+
 }

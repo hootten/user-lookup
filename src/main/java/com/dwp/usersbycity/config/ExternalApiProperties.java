@@ -7,25 +7,26 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @ConfigurationProperties(prefix = "external-api")
 public class ExternalApiProperties {
 
-    public final String baseUrl;
-    public final String usersInCityEndpoint;
-    public final String allUsersEndpoint;
+    public final String BASE_URL;
+    public final String USERS_LIVING_IN_CITY_ENDPOINT;
+    public final String ALL_USERS_ENDPOINT;
 
-    public ExternalApiProperties(String baseUrl, String usersInCityEndpoint, String allUsersEndpoint) {
-        this.baseUrl = baseUrl;
-        this.usersInCityEndpoint = usersInCityEndpoint;
-        this.allUsersEndpoint = allUsersEndpoint;
+    public ExternalApiProperties(String baseUrl, String usersLivingInCityEndpoint, String allUsersEndpoint) {
+        this.BASE_URL = baseUrl;
+        this.USERS_LIVING_IN_CITY_ENDPOINT = usersLivingInCityEndpoint;
+        this.ALL_USERS_ENDPOINT = allUsersEndpoint;
     }
 
     public String getBaseUrl() {
-        return baseUrl;
+        return BASE_URL;
     }
 
-    public String getUsersInCityEndpoint() {
-        return usersInCityEndpoint;
+    public String getUsersLivingInCityEndpoint() {
+        return USERS_LIVING_IN_CITY_ENDPOINT;
     }
 
     public String getAllUsersEndpoint() {
-        return allUsersEndpoint;
+        return ALL_USERS_ENDPOINT;
     }
+
 }

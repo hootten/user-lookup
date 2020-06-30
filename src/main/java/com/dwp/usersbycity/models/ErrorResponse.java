@@ -38,4 +38,5 @@ public class ErrorResponse {
     public void setDetails(String details) {
         this.error = details;
     }
+
 }
