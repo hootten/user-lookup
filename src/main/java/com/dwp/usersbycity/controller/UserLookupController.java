@@ -19,9 +19,13 @@ public class UserLookupController {
         this.userLookupService = userLookupService;
     }
 
-    @GetMapping(Constants.USERS_LINKED_TO_CITY_ENDPOINT)
-    public ResponseEntity<List<User>> getUsersLinkedToCity() {
-        return this.userLookupService.getUsersLinkedToCity();
+    @GetMapping(Constants.USERS_LIVING_IN_CITY_ENDPOINT)
+    public ResponseEntity<List<User>> getUsersLivingInCity() {
+        return this.userLookupService.getUsersLivingInCity();
     }
 
+    @GetMapping(Constants.USERS_IN_RADIUS_OF_CITY_ENDPOINT)
+    public ResponseEntity<List<User>> getUsersInRadiusOfCity() {
+        return this.userLookupService.getUsersInRadiusOfCity();
+    }
 }

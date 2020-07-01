@@ -1,5 +1,6 @@
 package com.dwp.usersbycity.models;
 
+import com.dwp.usersbycity.controller.Constants;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,13 +19,11 @@ public class User {
         return id;
     }
 
-    // id is set to -1 if NumberFormatException is thrown and User is filtered out in UserLookupService
     public void setId(String id) {
         try {
-            // check it isn't overwriting change from potential lat/lon NumberFormatException
-            this.id = this.id != -1 ? Integer.parseInt(id) : -1;
+            this.id = this.id != Constants.ERROR_ID ? Integer.parseInt(id) : Constants.ERROR_ID;
         } catch (NumberFormatException e) {
-            this.id = -1;
+            this.id = Constants.ERROR_ID;
         }
     }
 
@@ -74,7 +73,7 @@ public class User {
         try {
             this.latitude = Double.parseDouble(latitude);
         } catch (NumberFormatException e) {
-            this.id = -1;
+            this.id = Constants.ERROR_ID;
         }
     }
 
@@ -86,7 +85,7 @@ public class User {
         try {
             this.longitude = Double.parseDouble(longitude);
         } catch (NumberFormatException e) {
-            this.id = -1;
+            this.id = Constants.ERROR_ID;
         }
     }
 

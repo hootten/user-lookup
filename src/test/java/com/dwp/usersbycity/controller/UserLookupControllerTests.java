@@ -37,7 +37,9 @@ public class UserLookupControllerTests {
 
     private MockMvc mockMvc;
 
-    private final List<User> usersLinkedToCity = new ArrayList<>();
+    private final List<User> usersLivingInCity = new ArrayList<>();
+
+    private final List<User> usersInRadiusOfCity = new ArrayList<>();
 
     @Before
     public void init() {
@@ -47,34 +49,62 @@ public class UserLookupControllerTests {
     }
 
     @Test
-    public void testGetUsersLinkedToCity() throws Exception {
-        usersLinkedToCity.add(UserLookupTestsUtils.getUserLivingInCity());
-        usersLinkedToCity.add(UserLookupTestsUtils.getUserInCity());
-        when(userLookupService.getUsersLinkedToCity())
-                .thenReturn(new ResponseEntity<>(usersLinkedToCity, HttpStatus.OK));
+    public void testGetUsersLivingInCity() throws Exception {
+        usersLivingInCity.add(UserLookupTestsUtils.getUserLivingInCity());
+        when(userLookupService.getUsersLivingInCity())
+                .thenReturn(new ResponseEntity<>(usersLivingInCity, HttpStatus.OK));
 
-        mockMvc.perform(get("/usersLinkedToCity"))
+        mockMvc.perform(get("/usersLivingInCity"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[2]").doesNotExist());
+                .andExpect(jsonPath("$[1]").doesNotExist());
 
-        verify(userLookupService, times(1)).getUsersLinkedToCity();
+        verify(userLookupService, times(1)).getUsersLivingInCity();
         verifyNoMoreInteractions(userLookupService);
     }
 
     @Test
-    public void testGetNoUsersLinkedToCity() throws Exception {
-        when(userLookupService.getUsersLinkedToCity())
-                .thenReturn(new ResponseEntity<>(usersLinkedToCity, HttpStatus.OK));
+    public void testGetNoUsersLivingInCity() throws Exception {
+        when(userLookupService.getUsersLivingInCity())
+                .thenReturn(new ResponseEntity<>(usersLivingInCity, HttpStatus.OK));
 
-        mockMvc.perform(get("/usersLinkedToCity"))
+        mockMvc.perform(get("/usersLivingInCity"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$[0]").doesNotExist());
 
-        verify(userLookupService, times(1)).getUsersLinkedToCity();
+        verify(userLookupService, times(1)).getUsersLivingInCity();
+        verifyNoMoreInteractions(userLookupService);
+    }
+
+    @Test
+    public void testGetUsersInRadiusOfCity() throws Exception {
+        usersInRadiusOfCity.add(UserLookupTestsUtils.getUserInCity());
+        when(userLookupService.getUsersInRadiusOfCity())
+                .thenReturn(new ResponseEntity<>(usersInRadiusOfCity, HttpStatus.OK));
+
+        mockMvc.perform(get("/usersInRadiusOfCity"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$[0].id").value(2))
+                .andExpect(jsonPath("$[1]").doesNotExist());
+
+        verify(userLookupService, times(1)).getUsersInRadiusOfCity();
+        verifyNoMoreInteractions(userLookupService);
+    }
+
+    @Test
+    public void testGetNoUsersInRadiusOfCity() throws Exception {
+        when(userLookupService.getUsersInRadiusOfCity())
+                .thenReturn(new ResponseEntity<>(usersInRadiusOfCity, HttpStatus.OK));
+
+        mockMvc.perform(get("/usersInRadiusOfCity"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$[0]").doesNotExist());
+
+        verify(userLookupService, times(1)).getUsersInRadiusOfCity();
         verifyNoMoreInteractions(userLookupService);
     }
 
