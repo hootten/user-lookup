@@ -8,6 +8,10 @@ public class UserLookupTestsUtils {
     public final static double CITY_LON = -0.1275;
     public final static int RADIUS = 50;
     public final static double MILES_PER_METRE = 0.0006213712;
+    public final static double MAX_LAT = 90;
+    public final static double MAX_LON = 180;
+    public final static double MIN_LAT = -90;
+    public final static double MIN_LON = -180;
 
     public static User getUserLivingInCity() {
         User userLivingInCity = new User();

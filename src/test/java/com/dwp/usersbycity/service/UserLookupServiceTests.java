@@ -32,12 +32,15 @@ public class UserLookupServiceTests {
     private GeoProperties geoProperties;
 
     @Mock
+    private GeoService geoService;
+
+    @Mock
     private ExternalApiProperties externalApiProperties;
 
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        userLookupService = new UserLookupService(restTemplate, geoProperties, externalApiProperties);
+        userLookupService = new UserLookupService(restTemplate, geoProperties, externalApiProperties, geoService);
 
         when(externalApiProperties.getBaseUrl()).thenReturn("BASE");
         when(externalApiProperties.getUsersLivingInCityEndpoint()).thenReturn("/LIVING_IN_CITY");
@@ -45,7 +48,10 @@ public class UserLookupServiceTests {
         when(geoProperties.getCityLat()).thenReturn(UserLookupTestsUtils.CITY_LAT);
         when(geoProperties.getCityLon()).thenReturn(UserLookupTestsUtils.CITY_LON);
         when(geoProperties.getRadius()).thenReturn(UserLookupTestsUtils.RADIUS);
-        when(geoProperties.getMilesPerMetre()).thenReturn(UserLookupTestsUtils.MILES_PER_METRE);
+        when(geoProperties.getLonMax()).thenReturn(UserLookupTestsUtils.MAX_LON);
+        when(geoProperties.getLonMin()).thenReturn(UserLookupTestsUtils.MIN_LON);
+        when(geoProperties.getLatMax()).thenReturn(UserLookupTestsUtils.MAX_LAT);
+        when(geoProperties.getLatMin()).thenReturn(UserLookupTestsUtils.MIN_LON);
     }
 
     @Test
