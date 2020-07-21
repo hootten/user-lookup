@@ -91,7 +91,7 @@ public class UserLookupService {
     private double validateCoordinate(double coordinate, Axis axis, CoordinateOf coordinateOf) {
         double min;
         double max;
-        if (axis.equals(Axis.LAT)) {
+        if (axis == Axis.LAT) {
             min = geoProperties.getLatMin();
             max = geoProperties.getLatMax();
         } else {
@@ -101,7 +101,7 @@ public class UserLookupService {
         if (coordinate >= min && coordinate <= max) {
             return coordinate;
         } else {
-            if (coordinateOf.equals(CoordinateOf.USER)) {
+            if (coordinateOf == CoordinateOf.USER) {
                 throw new IllegalArgumentException("User's coordinates are not valid");
             } else {
                 throw new InvalidCityCoordinateException(
