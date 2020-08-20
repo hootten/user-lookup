@@ -33,4 +33,14 @@ public class ExceptionHandlerClass {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler(InvalidCityCoordinateException.class)
+    public final ResponseEntity<Object> handleInvalidCityCoordinateException(Exception e) {
+        LOGGER.error(e.getMessage());
+        ErrorResponse errorResponse =
+                new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), "Invalid coordinates for city");
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
+    }
+
 }
